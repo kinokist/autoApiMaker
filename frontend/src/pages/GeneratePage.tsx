@@ -4,17 +4,30 @@ import SchemaInput from "../components/SchemaInput";
 import ResultViewer from "../components/ResultViewer";
 import { generateBackend } from "../api/agentApi";
 
-function GeneratePage() {
-  const [query, setQuery] = useState("");
-  const [schema, setSchema] = useState("");
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+// API 요청 파라미터 타입
+interface GenerateRequest {
+  query: string;
+  schema: string;
+}
+
+// API 응답 타입 (백엔드에서 반환하는 구조에 맞게 수정 가능)
+interface GenerateResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
+}
+
+const GeneratePage: React.FC = () => {
+  const [query, setQuery] = useState<string>("");
+  const [schema, setSchema] = useState<string>("");
+  const [result, setResult] = useState<GenerateResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const res = await generateBackend({ query, schema });
-      setResult(res.data);
+      const res = await generateBackend({ query, schema } as GenerateRequest);
+      setResult(res.data as GenerateResponse);
     } catch (err) {
       console.error(err);
       alert("생성 실패");
@@ -36,6 +49,6 @@ function GeneratePage() {
       {result && <ResultViewer result={result} />}
     </div>
   );
-}
+};
 
 export default GeneratePage;

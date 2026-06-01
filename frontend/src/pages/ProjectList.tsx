@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { getProjects } from "../api/agentApi";
 
-function ProjectList() {
-  const [projects, setProjects] = useState([]);
+// 프로젝트 데이터 타입 정의
+interface Project {
+  id: string;
+  name: string;
+  status: string;
+}
+
+const ProjectList: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     loadProjects();
@@ -11,7 +18,7 @@ function ProjectList() {
   const loadProjects = async () => {
     try {
       const res = await getProjects();
-      setProjects(res.data);
+      setProjects(res.data as Project[]);
     } catch (err) {
       console.error(err);
     }
@@ -36,6 +43,6 @@ function ProjectList() {
       ))}
     </div>
   );
-}
+};
 
 export default ProjectList;
